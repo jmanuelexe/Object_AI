@@ -116,7 +116,7 @@ show pedro props
                 tk.scan();
                 break;
             }       
-            break;
+            break;		
         case TK_DEFINE:
             tk.scan();
             objects[tk.curToken.text]=Object();
