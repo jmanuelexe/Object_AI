@@ -77,7 +77,7 @@ int main()
     const char* s = R"(
 define pedro
 define jose
-pedro is tall
+pedro is tal
 is pedro tall
 show objects
 show pedro props
@@ -93,7 +93,7 @@ pedro is white
 show pedro props
 */
     int n, p;
-    Token l;
+    Token l,noun,adj;
     //char s[255];
     Tokenizer tk;
     tk.setSource(s);
@@ -105,7 +105,28 @@ show pedro props
 
         switch (tk.curToken.type) 
         {
-        case 
+        case TK_IS:
+			tk.scan();
+			switch (tk.curToken.type)
+			{
+				case TK_IDENTIFIER:
+					noun = tk.curToken;
+					tk.scan();
+					adj = tk.curToken;
+					bool isFound = false;
+
+
+					auto it = objects[noun.text].list.find(adj.text);
+					if (it != objects[noun.text].list.end())
+					{
+						std::cout << "true";
+						break;
+					}								
+					
+					std::cout << "false";
+					break;
+			}
+			break;
         case TK_IDENTIFIER:
             l = tk.curToken;
             tk.scan();
