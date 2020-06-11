@@ -3,38 +3,20 @@
 
 Reserved row2[] = {		//reserved words with lenth of two characters
 	{"is", TK_IS},
-	/*{ "if", TK_IF },
-	{ "do", TK_DO },
-	{ "or", TK_OR },
-	{ "to", TK_TO },*/
 	0
 };
 Reserved row3[] = {	//reserved words with lenth of three characters
-	/*{ "for", TK_FOR },
-	{ "end", TK_END },
-	{ "not", TK_NOT },
-	{ "and", TK_AND },*/
+	{"bye", TK_BYE },
 	0
 };
 Reserved row4[] = {
+	{"quit", TK_QUIT},
+	{"exit", TK_EXIT},
 	{"show", TK_SHOW},
-	/*{ "then", TK_THEN },
-	{ "true", TK_TRUE },
-	{ "case", TK_CASE },
-	{ "else", TK_ELSE },
-	{ "goto", TK_GOTO },*/
 	0
 };
 Reserved row5[] = {
 	{"props", TK_PROPS},
-	/*{ "false", TK_FALSE },
-	{ "while", TK_WHILE },
-	{ "break", TK_BREAK },
-	{ "label", TK_LABEL },
-	{ "range", TK_RANGE },
-	{ "class", TK_CLASS },
-	{ "begin", TK_BEGIN },
-	{ "endif", TK_ENDIF },*/
 	0
 };
 Reserved row6[] = {
@@ -48,9 +30,6 @@ Reserved row7[] = {
 };
 
 Reserved row8[] = {
-	/*{ "continue", TK_CONTINUE },
-	{ "function", TK_FUNCTION },
-	{ "endwhile", TK_ENDWHILE },*/
 	{ 0 }
 };
 
