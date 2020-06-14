@@ -7,19 +7,9 @@
 #include <map>
 #include "Tokenizer.h"
 
-struct Element {
-};
-
-struct Object;
-
-struct Adjective: public Element
+struct Object
 {
-    int val;
-};
-
-struct Object: public Element
-{
-    std::map<std::string, Adjective*> list;
+    std::map<std::string, Object*> list;
     Object() 
     {
     }
@@ -28,20 +18,20 @@ struct Object: public Element
     }
 
  };
-
-struct Synonym
-{
-    std::list<Element*> list;
-    Synonym() {
-    }
-    void addElement(Element* element)
-    {
-        list.push_back(element);
-    }
-};
-
-std::map<std::string, Synonym> synonyms;
-std::map<std::string, Adjective> adjetives;
+//
+//struct Synonym
+//{
+//    std::list<Element*> list;
+//    Synonym() {
+//    }
+//    void addElement(Element* element)
+//    {
+//        list.push_back(element);
+//    }
+//};
+//
+//std::map<std::string, Synonym> synonyms;
+//std::map<std::string, Adjective> adjetives;
 std::map<std::string, Object> objects;
 
 
@@ -53,7 +43,7 @@ void printAdjective(Object& o)
     {
         std::cout<< p->first << ", ";
     }
-    printf(")");
+    printf(")\n");
 }
 
 void printObject()
@@ -70,6 +60,15 @@ struct synonyms{
     synonyms *list;
     synonyms* next;
 };
+
+#define ERROR(str) std::cout << "I dont know " << str << " please define\n"; tk.scan();
+//parse definitions
+void parseDefine(Tokenizer& tk)
+{
+    tk.scan();
+    objects[tk.curToken.text] = Object();
+    std::cout << "ok.\n";
+}
 
 int main()
 {
@@ -91,11 +90,17 @@ pedro is rich
 rich is like walthy
 pedro is white
 */
-    Token noun;
     Tokenizer tk;
+    std::cout <<"Usage'\n";
+    std::cout <<"   create object: define [object name]\n";
+    std::cout <<"   create object propertie: [object name] is [object name]'\n";
+    std::cout <<"   ask about propertines: is [object name] [object name]\n";
+    std::cout <<"   show propertines of and object: show [object name] props\n";
+    std::cout <<"   show all objects: show objects\n";
     std::cout <<"type bye,quit exit to exit the application\n";
     for(;;)
     {
+       again:
         std::getline(std::cin, s);
         tk.setSource(s.c_str());
         tk.scan();
@@ -111,38 +116,43 @@ pedro is white
             if (tk.nextToken.type==TK_IDENTIFIER) {
                 o = objects.find(tk.curToken.text);
                 if (o == objects.end()) {
-                    std::cout << "I dont know " << tk.curToken.text << std::endl;
-                    tk.scan();
+                    ERROR(tk.curToken.text);
                     break;
                 }
                 auto ii=o->second.list.find(tk.nextToken.text);
                 if (ii == o->second.list.end()) {
-                    std::cout << "false\n";
+                    std::cout << "no\n";
                     break;
                 }
-                std::cout << "true\n";
+                std::cout << "yes\n";
                 tk.scan();
             }
             break;
         case TK_IDENTIFIER:
-            noun = tk.curToken;
             tk.scan();
             switch (tk.curToken.type) {
             case TK_IS:
-                adjetives[tk.nextToken.text] = Adjective();
-                //o = objects.find(noun.text);
-                objects[noun.text].list[tk.nextToken.text] = &adjetives[tk.nextToken.text];
+                o = objects.find(tk.lasttoken.text);
+                if (o == objects.end()) {
+                    ERROR(tk.lasttoken.text);
+                    break;
+                }
+                o->second.list[tk.nextToken.text] = &objects[tk.nextToken.text];
                 tk.scan();
+                std::cout <<"ok.\n";
                 break;
-            }       
+            default:std::cout << "\nI don't understand.\n"; break;
+            }
             break;
         case TK_DEFINE:
-            tk.scan();
-            objects[tk.curToken.text] = Object();
+            parseDefine(tk);            
             break;
         case TK_SHOW:
             switch (tk.nextToken.type) {
-            case TK_OBJECTS: printObject(); tk.scan(); break;
+            case TK_OBJECTS: 
+                printObject(); tk.scan(); 
+                std::cout << "ok.\n"; 
+                break;
             case TK_IDENTIFIER:
                 tk.scan();
                 switch (tk.nextToken.type) {
@@ -152,15 +162,18 @@ pedro is white
                         printAdjective(o->second);
                     }
                     else {
-                        std::cout << "I don't know who is "<< tk.curToken.text<<std::endl;
+                        ERROR(tk.curToken.text);
+                        break;
                     }
                     tk.scan();
+                    std::cout <<"ok.\n";
+                default:std::cout << "\nI don't understand.\n"; goto again; break;
                 }
                 break;
+            default:std::cout <<"\nI don't understand.\n"; goto again; break;
             }
             break;
+        default:std::cout <<"\nI don't understand.\n"; break;
         }
     }
-
-    //std::cin >> s;
 }
